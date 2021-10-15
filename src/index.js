@@ -1,7 +1,9 @@
 import _ from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
 
 class Task {
     constructor(title, description, dueDate, priority) {
+        this.id = uuidv4()
         this.title = title
         this.description = description
         this.dueDate = dueDate
@@ -15,7 +17,6 @@ class Project {
         this.tasks = []
     }
     createTask(task) {
-        task.id = 0 // UUID?
         this.tasks.push(task)
     }
     deleteTask(id) {
@@ -30,3 +31,8 @@ class Project {
         }) 
     }
 }
+
+let task = new Task("laundry", "do the laundry", "tomorrow", "high")
+let project = new Project("default")
+project.createTask(task)
+console.log(project.tasks)
