@@ -2,11 +2,27 @@ import _ from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 
 class Task {
-    constructor(title, description, dueDate, priority) {
+    constructor(title, description, dueDate, priority, status) {
         this.id = uuidv4()
         this.title = title
         this.description = description
         this.dueDate = dueDate
+        this.priority = priority
+        this.status = status
+    }
+    changeStatus() {
+        this.status = !this.status
+    }
+    changeTitle(title) {
+        this.title = title
+    }
+    changeDescription(description) {
+        this.description = description
+    }
+    changeDueDate(dueDate) {
+        this.dueDate = dueDate
+    }
+    changePriority(priority) {
         this.priority = priority
     }
 }
@@ -16,23 +32,31 @@ class Project {
         this.name = name
         this.tasks = []
     }
-    createTask(task) {
+    add(task) {
         this.tasks.push(task)
     }
-    deleteTask(id) {
+    remove(id) {
        this.tasks = this.tasks.filter(t => t.id !== id)
     }
-    updateTask(task) {
-        this.tasks = this.tasks.map(t => {
-            if (t.id === task.id) {
-                return task
-            }
-            return t
-        }) 
+    sortByPriority() {
+    }
+    sortByDueDate() {
     }
 }
 
-let task = new Task("laundry", "do the laundry", "tomorrow", "high")
+class Storage {
+    getAll() {
+        // Get all projects from local storage
+    }
+    getOne(project) {
+        // Get one project from local storage
+    }
+    store() {
+        // Store project to local storage
+    }
+}
+
+let task = new Task("laundry", "do the laundry", "tomorrow", "high", false)
 let project = new Project("default")
-project.createTask(task)
+project.add(task)
 console.log(project.tasks)
