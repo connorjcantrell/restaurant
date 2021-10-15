@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
+import { compareAsc, format } from 'date-fns'
 
 class Task {
     constructor(title, description, dueDate, priority, status) {
@@ -10,20 +11,9 @@ class Task {
         this.priority = priority
         this.status = status
     }
-    changeStatus() {
-        this.status = !this.status
-    }
-    changeTitle(title) {
-        this.title = title
-    }
-    changeDescription(description) {
-        this.description = description
-    }
-    changeDueDate(dueDate) {
-        this.dueDate = dueDate
-    }
-    changePriority(priority) {
-        this.priority = priority
+    edit(field, value) {
+        if (this[field] === undefined) return
+        this[field] = value 
     }
 }
 
@@ -38,25 +28,36 @@ class Project {
     remove(id) {
        this.tasks = this.tasks.filter(t => t.id !== id)
     }
-    sortByPriority() {
-    }
-    sortByDueDate() {
+    sort(field, reversed=false) {
+        if (this.tasks.length === 0) return this.tasks
+        if (this.tasks[0][field] === undefined) return this.tasks
+        ordered = this.tasks.sort((a, b) => a[field] > b[field] ? 1 : -1)
+        if (reversed) return ordered.reverse()
+        return ordered
     }
 }
 
 class Storage {
-    getAll() {
-        // Get all projects from local storage
+    getProjects() {
+        // Verify `projects` key exists in local storage
+        // Retrieve content (project names) from `projects` key
     }
-    getOne(project) {
-        // Get one project from local storage
+    getProject(key) {
+        // Verify `name` key exists in local storage
+        // Retrieve content (tasks) from `name` key
     }
-    store() {
-        // Store project to local storage
+    storeProject(project) {
+        // Add project name to `projects` key
+        // Write tasks to `project.name` key
     }
+    deleteProject(key)
 }
 
+// Test
 let task = new Task("laundry", "do the laundry", "tomorrow", "high", false)
+task.edit("title", "new title")
+task.edit("blag", "new title")
 let project = new Project("default")
 project.add(task)
 console.log(project.tasks)
+console.log(task.title)
