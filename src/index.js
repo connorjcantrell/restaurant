@@ -38,26 +38,38 @@ class Project {
 }
 
 class Storage {
-    getProjects() {
-        // Verify `projects` key exists in local storage
-        // Retrieve content (project names) from `projects` key
+    static get(key) {
+        const result = JSON.parse(localStorage.getItem(key))
+        if (result === null) return []
+        return result
     }
-    getProject(key) {
-        // Verify `name` key exists in local storage
-        // Retrieve content (tasks) from `name` key
+    static post(key, value) {
+        // Add 'key' to 'projects', if not already
+        if (key !== 'projects') {
+            let projects = Storage.get('projects')
+            console.log(projects)
+            if (!projects.includes(key)) {
+                projects.push(key)
+                console.log(projects)
+                localStorage.setItem('projects', JSON.stringify(projects))
+            }
+        }
+        localStorage.setItem(key, JSON.stringify(value))
     }
-    storeProject(project) {
-        // Add project name to `projects` key
-        // Write tasks to `project.name` key
+    static delete(key) {
+        // Remove key from "projects"
+        let projects = Storage.get('projects')
+        localStorage.setItem('projects', JSON.stringify(projects.filter(t => t !== key)))
+        // Remove key from localStorage
+        localStorage.removeItem(key)
     }
-    deleteProject(key)
 }
 
 // Test
 let task = new Task("laundry", "do the laundry", "tomorrow", "high", false)
 task.edit("title", "new title")
 task.edit("blag", "new title")
-let project = new Project("default")
-project.add(task)
-console.log(project.tasks)
-console.log(task.title)
+let d = new Project("default")
+d.add(task)
+Storage.post(d.name, d.tasks)
+Storage.delete(d.name)
