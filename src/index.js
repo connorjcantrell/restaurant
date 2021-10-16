@@ -1,10 +1,10 @@
-import _ from 'lodash';
+import _, { values } from 'lodash';
 import { v4 as uuidv4 } from 'uuid'
 import { compareAsc, format } from 'date-fns'
 
 class Task {
-    constructor(title, description, dueDate, priority, status) {
-        this.id = uuidv4()
+    constructor(title, description, dueDate, priority, status, id=undefined) {
+        this.id = (id === undefined) ? uuidv4() : id
         this.title = title
         this.description = description
         this.dueDate = dueDate
@@ -17,10 +17,11 @@ class Task {
     }
 }
 
+// Project containing related tasks
 class Project {
-    constructor(name) {
+    constructor(name, tasks=[]) {
         this.name = name
-        this.tasks = []
+        this.tasks = tasks
     }
     add(task) {
         this.tasks.push(task)
@@ -37,6 +38,7 @@ class Project {
     }
 }
 
+// Data storage and access using in localStorage
 class Storage {
     static get(key) {
         const result = JSON.parse(localStorage.getItem(key))
@@ -47,7 +49,6 @@ class Storage {
         // Add 'key' to 'projects', if not already
         if (key !== 'projects') {
             let projects = Storage.get('projects')
-            console.log(projects)
             if (!projects.includes(key)) {
                 projects.push(key)
                 console.log(projects)
@@ -57,7 +58,7 @@ class Storage {
         localStorage.setItem(key, JSON.stringify(value))
     }
     static delete(key) {
-        // Remove key from "projects"
+        // Remove key from 'projects'
         let projects = Storage.get('projects')
         localStorage.setItem('projects', JSON.stringify(projects.filter(t => t !== key)))
         // Remove key from localStorage
@@ -65,11 +66,32 @@ class Storage {
     }
 }
 
+// Project to Storage Interfacer
+class ProjectStorage {
+    static get(name) {
+        const json = Storage.get(name)
+        let tasks = json.map(t => {
+            return new Task(t['title'], t['description'], t['dueDate'], t['priority'], t['status'], t['id'])
+        })
+        return new Project(name, tasks)
+    }
+    static post(project) {
+        Storage.post(project.name, project.tasks)
+    }
+    static delete(project) {
+        Storage.delete(project.name)
+    }
+}
+
 // Test
-let task = new Task("laundry", "do the laundry", "tomorrow", "high", false)
-task.edit("title", "new title")
-task.edit("blag", "new title")
-let d = new Project("default")
+let task = new Task('dishes', 'do the laundry', 'tomorrow', 'high', false)
+let task2 = new Task('vacuum', 'do the trash', 'tomorrow', 'high', false)
+let d = new Project('default')
+let chores = new Project('chores')
+chores.add(task)
+chores.add(task2)
 d.add(task)
-Storage.post(d.name, d.tasks)
-Storage.delete(d.name)
+d.add(task2)
+ProjectStorage.post(d)
+ProjectStorage.post(chores)
+ProjectStorage.get('default')
