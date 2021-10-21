@@ -2,10 +2,14 @@
 class Project {
     constructor(name, tasks=[]) {
         this.name = name
+        this.description = ''
         this.tasks = tasks
     }
-    add(task) {
+    addTask(task) {
         this.tasks.push(task)
+    }
+    editDescription(description) {
+        this.description = description
     }
     remove(id) {
        this.tasks = this.tasks.filter(t => t.id !== id)
