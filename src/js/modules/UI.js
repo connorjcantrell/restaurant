@@ -1,7 +1,7 @@
 import "./Project"
 import "./Task"
-import "./Storage"
-import ProjectStorage from "./Storage"
+import "./LocalStorage"
+import ProjectStorage from "./LocalStorage"
 
 class UI {
     // Load Project Names
@@ -15,4 +15,8 @@ class UI {
     // Create Task to Project
     
     // Edit Task
+    
+    // Project Event Listeners
+
+    // Task Event Listeners
 }
