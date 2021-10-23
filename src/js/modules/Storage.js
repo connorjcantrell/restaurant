@@ -7,13 +7,11 @@ class Storage {
         let keys = LocalStorage.get()
         let projects = []
         for (let key in keys) {
-            // TODO: Figure out why object is undefined when calling getProject
-            projects.push(this.getProject(key))
+            projects.push(this.getProject(keys[key]))
         }
         return projects
     }
     static getProject(object) {
-        console.log(object)
         let tasks = object['tasks'].map(t => {
             return new Task(t['title'], t['description'], t['dueDate'], t['priority'], t['status'], t['id'])
         })
