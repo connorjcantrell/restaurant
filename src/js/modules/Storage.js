@@ -3,12 +3,17 @@ import Task from "./Task"
 import LocalStorage from "./LocalStorage"
 
 class Storage {
-    static getAll() {
+    static getProjects() {
         let keys = LocalStorage.get()
-        return keys.map(project => this.getProject(project))
-
+        let projects = []
+        for (let key in keys) {
+            // TODO: Figure out why object is undefined when calling getProject
+            projects.push(this.getProject(key))
+        }
+        return projects
     }
     static getProject(object) {
+        console.log(object)
         let tasks = object['tasks'].map(t => {
             return new Task(t['title'], t['description'], t['dueDate'], t['priority'], t['status'], t['id'])
         })
